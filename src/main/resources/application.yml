@@ -19,8 +19,8 @@ spring:
 
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
 
   mail:
     host: smtp.gmail.com
@@ -45,4 +45,4 @@ springdoc:
 jwt:
   secret: ${JWT_SECRET}
 
-MAIL_LOCATION: ${MAIL_LOCATION}
+MAIL-LOCATION: ${MAIL-LOCATION}

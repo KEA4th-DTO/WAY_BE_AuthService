@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: way.auth
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${POSTGRESQL_DB_HOST}
+    username: ${POSTGRESQL_DB_USER}
+    password: ${POSTGRESQL_DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      database: postgresql
+      hibernate:
+        format_sql: true #To beautify or pretty print the SQL
+        show_sql: true #show sql
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        debug: true
+        smtp.auth: true
+        smtp.timeout: 60000 # 60000ms
+        smtp.starttls.enable: true
+
+
+
+springdoc:
+  api-docs:
+    path: /auth-service/v3/api-docs
+  swagger-ui:
+    path: /auth-service/swagger-ui.html
+
+jwt:
+  secret: ${JWT_SECRET}
+
+MAIL_LOCATION: ${MAIL_LOCATION}

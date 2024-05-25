@@ -34,8 +34,6 @@ spring:
         smtp.timeout: 60000 # 60000ms
         smtp.starttls.enable: true
 
-
-
 springdoc:
   api-docs:
     path: /auth-service/v3/api-docs
@@ -44,3 +42,5 @@ springdoc:
 
 jwt:
   secret: ${JWT_SECRET}
+
+LOCATION: ${LOCATION}

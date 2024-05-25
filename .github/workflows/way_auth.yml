@@ -75,3 +75,4 @@ jobs:
         git commit -m "[CI/CD] Update way-be-authservice-rollout.yaml"
         git remote set-url origin https://${{ secrets.PAT }}@github.com/${{ secrets.USERNAME }}/argo-manifest
         git push --set-upstream origin HEAD
+        

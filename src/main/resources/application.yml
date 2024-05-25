@@ -42,5 +42,3 @@ springdoc:
 
 jwt:
   secret: ${JWT_SECRET}
-
-LOCATION: ${LOCATION}

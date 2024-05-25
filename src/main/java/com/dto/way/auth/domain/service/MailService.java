@@ -23,13 +23,13 @@ public class MailService {
     private final CertificationGenerator certificationGenerator;
     private final RedisService redisService;
 
-    @Value("${LOCATION}")
-    private String location;
+    private static final String LOCAL_LOCATION = "localhost:8080";
+    private static final String CLOUD_LOCATION = "http://210.109.55.124";
 
     public EmailCertificationResponse sendEmailForCertification(String email) throws NoSuchAlgorithmException, MessagingException {
 
         String certificationNumber = certificationGenerator.createCertificationNumber();
-        String content = String.format("%s/auth-service/verify?certificationNumber=%s&email=%s   해당 링크로 10분 이내에 접속해주세요.", location, certificationNumber, email);
+        String content = String.format("%s/auth-service/verify?certificationNumber=%s&email=%s   해당 링크로 10분 이내에 접속해주세요.", CLOUD_LOCATION, certificationNumber, email);
 
         saveEmailInRedis(email, certificationNumber);
 

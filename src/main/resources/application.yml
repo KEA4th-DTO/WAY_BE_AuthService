@@ -44,5 +44,3 @@ springdoc:
 
 jwt:
   secret: ${JWT_SECRET}
-
-MAIL-LOCATION: ${MAIL-LOCATION}

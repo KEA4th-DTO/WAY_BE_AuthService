@@ -23,7 +23,7 @@ public class MailService {
     private final CertificationGenerator certificationGenerator;
     private final RedisService redisService;
 
-    @Value("${VERIFY-LOCATION}")
+    @Value("${LOCATION}")
     private String location;
 
     public EmailCertificationResponse sendEmailForCertification(String email) throws NoSuchAlgorithmException, MessagingException {

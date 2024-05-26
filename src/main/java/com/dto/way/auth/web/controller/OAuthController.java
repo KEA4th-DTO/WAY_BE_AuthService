@@ -20,11 +20,11 @@ import static com.dto.way.auth.web.dto.MemberRequestDTO.*;
 @RequestMapping("/oauth")
 public class OAuthController {
 
-    @Value("${kakao.client.id}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     String clientId;
-    @Value("${kakao.redirect.uri}")
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     String redirectUri;
-    @Value("${kakao.client.secret}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
     String clientSecret;
 
     private final OAuthService oAuthService;

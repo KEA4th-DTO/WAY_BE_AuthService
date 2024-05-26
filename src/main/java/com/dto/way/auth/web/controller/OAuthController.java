@@ -41,7 +41,7 @@ public class OAuthController {
         url.append("client_id=" + clientId);
         url.append("&redirect_uri=" + redirectUri);
         url.append("&response_type=code");
-        return "redirect:" + url.toString();
+        return "redirect:" + url;
     }
 
     /**

@@ -28,11 +28,11 @@ import static com.dto.way.auth.domain.service.MemberService.DEFAULT_IMAGE;
 @RequiredArgsConstructor
 public class OAuthService {
 
-    @Value("${kakao.client.id}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     String clientId;
-    @Value("${kakao.redirect.uri}")
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     String redirectUri;
-    @Value("${kakao.client.secret}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
     String clientSecret;
 
 

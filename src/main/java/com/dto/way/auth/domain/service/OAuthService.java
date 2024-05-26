@@ -3,6 +3,7 @@ package com.dto.way.auth.domain.service;
 import com.dto.way.auth.domain.entity.LoginType;
 import com.dto.way.auth.domain.entity.Member;
 import com.dto.way.auth.domain.entity.MemberStatus;
+import com.dto.way.auth.global.OAuthProperties;
 import com.dto.way.auth.web.dto.KakaoInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -28,15 +29,8 @@ import static com.dto.way.auth.domain.service.MemberService.DEFAULT_IMAGE;
 @RequiredArgsConstructor
 public class OAuthService {
 
-    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
-    String clientId;
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-    String redirectUri;
-    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
-    String clientSecret;
-
-
     private final MemberService memberService;
+    private final OAuthProperties oAuthProperties;
 
     public String getAccessToken(String code) throws JsonProcessingException {
         // HTTP Header 생성
@@ -46,10 +40,10 @@ public class OAuthService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", clientId);
-        body.add("redirect_uri", redirectUri);
+        body.add("client_id", oAuthProperties.getKakaoClientId());
+        body.add("redirect_uri", oAuthProperties.getKakaoRedirectUri());
         body.add("code", code);
-        body.add("client_secret", clientSecret);
+        body.add("client_secret", oAuthProperties.getKakaoClientSecret());
 
         // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);

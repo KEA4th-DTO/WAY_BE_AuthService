@@ -3,6 +3,7 @@ package com.dto.way.auth.web.controller;
 import com.dto.way.auth.domain.entity.Member;
 import com.dto.way.auth.domain.service.MemberService;
 import com.dto.way.auth.domain.service.OAuthService;
+import com.dto.way.auth.global.OAuthProperties;
 import com.dto.way.auth.web.dto.KakaoInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpSession;
@@ -20,15 +21,9 @@ import static com.dto.way.auth.web.dto.MemberRequestDTO.*;
 @RequestMapping("/oauth")
 public class OAuthController {
 
-    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
-    String clientId;
-    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-    String redirectUri;
-    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
-    String clientSecret;
-
     private final OAuthService oAuthService;
     private final MemberService memberService;
+    private final OAuthProperties oAuthProperties;
 
     /**
      * 카카오 로그인 요청
@@ -38,8 +33,8 @@ public class OAuthController {
     public String kakaoConnect() {
         StringBuffer url = new StringBuffer();
         url.append("https://kauth.kakao.com/oauth/authorize?");
-        url.append("client_id=" + clientId);
-        url.append("&redirect_uri=" + redirectUri);
+        url.append("client_id=" + oAuthProperties.getKakaoClientId());
+        url.append("&redirect_uri=" + oAuthProperties.getKakaoRedirectUri());
         url.append("&response_type=code");
         return "redirect:" + url;
     }

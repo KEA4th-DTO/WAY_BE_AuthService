@@ -4,17 +4,19 @@ import com.dto.way.auth.domain.entity.Member;
 import com.dto.way.auth.domain.service.MemberService;
 import com.dto.way.auth.domain.service.OAuthService;
 import com.dto.way.auth.global.OAuthProperties;
+import com.dto.way.auth.web.dto.JwtToken;
 import com.dto.way.auth.web.dto.KakaoInfo;
+import com.dto.way.auth.web.response.ApiResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import static com.dto.way.auth.web.dto.MemberRequestDTO.*;
+import static com.dto.way.auth.web.response.code.status.SuccessStatus.MEMBER_LOGIN;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,7 +46,7 @@ public class OAuthController {
      * @return
      */
     @GetMapping("/kakao/callback")
-    public String kakaoCallback(@RequestParam String code, HttpSession session) {
+    public ApiResponse<JwtToken> kakaoCallback(@RequestParam String code, HttpSession session) {
         // STEP1: 인가코드 받기
 
         // STEP2: 인가코드를 기반으로 토큰(Access Token) 발급
@@ -71,7 +73,7 @@ public class OAuthController {
 
         // STEP5: 강제 로그인
         LoginMemberRequestDTO loginMemberRequestDTO = new LoginMemberRequestDTO(email, password);
-        memberService.login(loginMemberRequestDTO);
+        JwtToken jwtToken = memberService.login(loginMemberRequestDTO);
 
         // STEP5: 강제 로그인
         // 세션에 회원 정보 저장 & 세션 유지 시간 설정
@@ -82,7 +84,7 @@ public class OAuthController {
         // 로그아웃 시 사용할 카카오토큰 추가
         session.setAttribute("kakaoToken", accessToken);
 
-        return "로그인 성공";
+        return ApiResponse.of(MEMBER_LOGIN, jwtToken);
     }
 
     /**

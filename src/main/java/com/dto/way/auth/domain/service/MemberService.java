@@ -36,7 +36,7 @@ public class MemberService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RedisService redisService;
 
-    public static final String DEFAULT_IMAGE = "https://way-bucket-s3.s3.ap-northeast-2.amazonaws.com/default.jpg";
+    public static final String DEFAULT_IMAGE = "https://way-bucket-s3.s3.ap-northeast-2.amazonaws.com/profile_image/default.jpg";
 
     @Transactional
     public String createMember(CreateMemberRequestDTO createMemberRequestDTO) {

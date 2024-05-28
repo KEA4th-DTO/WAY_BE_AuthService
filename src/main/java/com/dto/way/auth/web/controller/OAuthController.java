@@ -10,6 +10,7 @@ import com.dto.way.auth.web.response.ApiResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.dto.way.auth.web.dto.MemberRequestDTO.*;
 import static com.dto.way.auth.web.response.code.status.SuccessStatus.MEMBER_LOGIN;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/oauth")
 public class OAuthController {

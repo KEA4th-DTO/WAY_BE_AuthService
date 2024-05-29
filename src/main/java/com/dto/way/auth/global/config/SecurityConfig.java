@@ -24,7 +24,7 @@ public class SecurityConfig {
         return httpSecurity
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
+                .cors(AbstractHttpConfigurer::disable)
                 .sessionManagement(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/", "/auth-service/v3/api-docs/**", "/auth-service/swagger-ui/**", "/auth-service/swagger-resources/**").permitAll()
@@ -40,8 +40,6 @@ public class SecurityConfig {
                         .requestMatchers("/auth-service/oauth/kakao/callback").permitAll()
                         .requestMatchers("/auth-service/oauth/kakao/callback&response_type=code").permitAll()
                         .requestMatchers("/auth-service/oauth/kakao/logout").permitAll()
-//                        .requestMatchers("/api/kakao/**").permitAll()
-//                        .requestMatchers("/v2/user/me/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)

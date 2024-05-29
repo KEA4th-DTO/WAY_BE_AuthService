@@ -46,9 +46,9 @@ spring:
         registration:
           kakao:
             client-id: ${KAKAO_CLIENT_ID}
+            client-authentication-method: POST
             client-secret: ${KAKAO_CLIENT_SECRET}
-            client-authentication-method: client_secret_post
-            redirect-uri: ${KAKAO_REDIRECT_URI}
+            redirect-uri: http://localhost:3000/auth
             authorization-grant-type: authorization_code
             client-name: kakao
             scope:

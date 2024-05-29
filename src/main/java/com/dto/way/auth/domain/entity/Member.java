@@ -56,10 +56,7 @@ public class Member implements UserDetails {
 
     private LocalDateTime updatedAt;
 
-    @ElementCollection
-    @CollectionTable(name = "waytag", joinColumns = @JoinColumn(name = "member_id"))
-    @Column(name = "tags")
-    private List<String> tags;
+    private String textURL;
 
     @OneToMany(mappedBy = "fromMember", fetch = FetchType.LAZY)
     private List<Follow> followingList;
@@ -67,6 +64,11 @@ public class Member implements UserDetails {
     @OneToMany(mappedBy = "toMember", fetch = FetchType.LAZY)
     private List<Follow> followerList;
 
+    @OneToMany(mappedBy = "taggedMember", fetch = FetchType.LAZY)
+    private List<Tag> tagList;
+
+    @OneToMany(mappedBy = "recommendedMember", fetch = FetchType.LAZY)
+    private List<Recommend> recommendList;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

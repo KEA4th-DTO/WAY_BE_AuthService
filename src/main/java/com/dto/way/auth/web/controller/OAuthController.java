@@ -10,7 +10,7 @@ import com.dto.way.auth.web.response.ApiResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,9 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.dto.way.auth.web.dto.MemberRequestDTO.*;
 import static com.dto.way.auth.web.response.code.status.SuccessStatus.MEMBER_LOGIN;
 
-@Controller
+@Slf4j
+@RestController
 @RequiredArgsConstructor
-@RequestMapping("/oauth")
+@RequestMapping("/auth-service/oauth")
 public class OAuthController {
 
     private final OAuthService oAuthService;
@@ -47,30 +48,24 @@ public class OAuthController {
      * @return
      */
     @GetMapping("/kakao/callback")
-    public ApiResponse<JwtToken> kakaoCallback(@RequestParam String code, HttpSession session) {
+    public ApiResponse<JwtToken> kakaoCallback(@RequestParam String code, HttpSession session) throws JsonProcessingException {
         // STEP1: 인가코드 받기
 
         // STEP2: 인가코드를 기반으로 토큰(Access Token) 발급
         String accessToken;
-        try {
-            accessToken = oAuthService.getAccessToken(code);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        accessToken = oAuthService.getAccessToken(code);
 
         // STEP3: 토큰을 통해 사용자 정보 조회
         KakaoInfo kakaoInfo;
-        try {
-            kakaoInfo = oAuthService.getKakaoInfo(accessToken);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        kakaoInfo = oAuthService.getKakaoInfo(accessToken);
 
         // STEP4: 카카오 사용자 정보 확인
         Member kakaoMember = oAuthService.ifNeedKakaoInfo(kakaoInfo);
 
         String email = kakaoMember.getEmail();
         String password = kakaoMember.getPassword();
+        log.info("email = {}", email);
+        log.info("password = {}", password);
 
         // STEP5: 강제 로그인
         LoginMemberRequestDTO loginMemberRequestDTO = new LoginMemberRequestDTO(email, password);

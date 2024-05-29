@@ -9,11 +9,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -25,12 +22,14 @@ import java.util.UUID;
 import static com.dto.way.auth.domain.entity.MemberAuth.CLIENT;
 import static com.dto.way.auth.domain.service.MemberService.DEFAULT_IMAGE;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OAuthService {
 
     private final MemberService memberService;
     private final OAuthProperties oAuthProperties;
+    private final ObjectMapper objectMapper;
 
     public String getAccessToken(String code) throws JsonProcessingException {
         // HTTP Header 생성
@@ -89,21 +88,16 @@ public class OAuthService {
         String nickname = jsonNode.get("properties")
                 .get("nickname").asText();
 
-        return new KakaoInfo(id, nickname, email);
+        return new KakaoInfo(nickname, email);
     }
 
-    public Member ifNeedKakaoInfo (KakaoInfo kakaoInfo) {
-        // DB에 중복되는 email이 있는지 확인
+    public Member ifNeedKakaoInfo(KakaoInfo kakaoInfo) {
         String kakaoEmail = kakaoInfo.getEmail();
         Member kakaoMember = memberService.findMemberByEmail(kakaoEmail);
 
-        if (kakaoMember != null) { // 이미 해당 email로 가입한 이력이 있다면
-
+        if (kakaoMember != null) {
             return kakaoMember;
-
         } else {
-
-            // 임시 비밀번호, 임시 닉네임, 임시 이름, 임시 전화번호
             String tempName = UUID.randomUUID().toString();
             String tempNickname = UUID.randomUUID().toString();
             String tempPassword = UUID.randomUUID().toString();
@@ -122,31 +116,32 @@ public class OAuthService {
                     .loginType(LoginType.KAKAO)
                     .build();
         }
-
     }
 
     public void kakaoDisconnect(String accessToken) throws JsonProcessingException {
-        // HTTP Header 생성
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + accessToken);
-        headers.add("Content-type", "application/x-www-form-urlencoded");
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", "Bearer " + accessToken);
+            headers.add("Content-type", "application/x-www-form-urlencoded");
 
-        // HTTP 요청 보내기
-        HttpEntity<MultiValueMap<String, String>> kakaoLogoutRequest = new HttpEntity<>(headers);
-        RestTemplate rt = new RestTemplate();
-        ResponseEntity<String> response = rt.exchange(
-                "https://kapi.kakao.com/v1/user/logout",
-                HttpMethod.POST,
-                kakaoLogoutRequest,
-                String.class
-        );
+            HttpEntity<MultiValueMap<String, String>> kakaoLogoutRequest = new HttpEntity<>(headers);
+            RestTemplate rt = new RestTemplate();
+            ResponseEntity<String> response = rt.exchange(
+                    "https://kapi.kakao.com/v1/user/logout",
+                    HttpMethod.POST,
+                    kakaoLogoutRequest,
+                    String.class
+            );
 
-        // responseBody에 있는 정보를 꺼냄
-        String responseBody = response.getBody();
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(responseBody);
+            String responseBody = response.getBody();
+            JsonNode jsonNode = objectMapper.readTree(responseBody);
 
-        Long id = jsonNode.get("id").asLong();
-        System.out.println("반환된 id: "+id);
+            Long id = jsonNode.get("id").asLong();
+            System.out.println("반환된 id: " + id);
+        } catch (Exception e) {
+            // 추가적인 예외 처리 및 로깅
+            e.printStackTrace();
+            throw new RuntimeException("Failed to disconnect Kakao", e);
+        }
     }
 }

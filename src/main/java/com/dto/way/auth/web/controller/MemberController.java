@@ -31,6 +31,10 @@ public class MemberController {
         String result = memberService.createMember(createMemberRequestDTO);
 
         if (result.equals(MEMBER_SIGNUP.getCode())) { // 회원가입에 성공한 경우
+            String nickname = createMemberRequestDTO.getNickname();
+            log.info("member nickname = {}", nickname);
+            Member member = memberService.findMemberByNickname(nickname);
+            memberService.initTagAndRecommend(member);
             return ApiResponse.of(MEMBER_SIGNUP, createMemberRequestDTO);
         }
 

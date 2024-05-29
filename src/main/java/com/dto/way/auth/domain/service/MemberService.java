@@ -1,9 +1,9 @@
 package com.dto.way.auth.domain.service;
 
-import com.dto.way.auth.domain.entity.LoginType;
-import com.dto.way.auth.domain.entity.Member;
-import com.dto.way.auth.domain.entity.MemberStatus;
+import com.dto.way.auth.domain.entity.*;
 import com.dto.way.auth.domain.repository.MemberRepository;
+import com.dto.way.auth.domain.repository.RecommendRepository;
+import com.dto.way.auth.domain.repository.TagRepository;
 import com.dto.way.auth.global.JwtTokenProvider;
 import com.dto.way.auth.web.dto.JwtToken;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +35,8 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RedisService redisService;
+    private final TagRepository tagRepository;
+    private final RecommendRepository recommendRepository;
 
     public static final String DEFAULT_IMAGE = "https://way-bucket-s3.s3.ap-northeast-2.amazonaws.com/profile_image/default.jpg";
 
@@ -80,10 +82,34 @@ public class MemberService {
                 .loginType(LoginType.GENERAL)
                 .build();
 
-        memberRepository.save(member);
+        memberRepository.saveAndFlush(member);
 
         return MEMBER_SIGNUP.getCode();
+    }
 
+    @Transactional
+    public void initTagAndRecommend(Member member) {
+        Tag tag = Tag.builder()
+                .taggedMember(member)
+                .wayTag1("태그1")
+                .wayTag2("태그2")
+                .wayTag3("태그3")
+                .build();
+
+        Tag savedTag = tagRepository.saveAndFlush(tag);
+
+        // Log the saved tag to ensure taggedMember is not null
+        System.out.println("Saved Tag ID: " + savedTag.getId());
+        System.out.println("Tagged Member in Tag: " + savedTag.getTaggedMember().getId());
+
+        Recommend recommend = Recommend.builder()
+                .recommendedMember(member)
+                .memberId1(12345L)
+                .memberId2(23456L)
+                .memberId3(34567L)
+                .build();
+
+        recommendRepository.saveAndFlush(recommend);
     }
 
     public JwtToken login(LoginMemberRequestDTO loginMemberRequestDTO) {
@@ -95,6 +121,14 @@ public class MemberService {
                 return new JwtToken(MEMBER_LOGIN_FAILED.getCode(), null, null);
             }
         }
+
+        /**
+         * 문제 발생
+         * 1. 카카오 정보에 이름이 없어서 이름을 모름
+         * 2. 카카오로 로그인하면 비밀번호가 암호화되지 않고 들어감
+         */
+        CreateMemberRequestDTO createMemberRequestDTO = new CreateMemberRequestDTO();
+
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginMemberRequestDTO.getEmail(), loginMemberRequestDTO.getPassword());
 

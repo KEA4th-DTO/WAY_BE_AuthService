@@ -1,6 +1,7 @@
 package com.dto.way.auth.domain.service;
 
 import com.dto.way.auth.domain.entity.Member;
+import com.dto.way.auth.domain.entity.MemberAuth;
 import com.dto.way.auth.domain.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
@@ -23,11 +24,19 @@ public class MemberDetailService implements UserDetailsService {
     }
 
     private UserDetails createUserDetails(Member member) {
-        return User.builder()
-                .username(member.getEmail())
-                .password(member.getPassword())
-                .build();
+
+        if (member.getMemberAuth() == MemberAuth.ADMIN) {
+            return User.builder()
+                    .username(member.getEmail())
+                    .password(member.getPassword())
+                    .roles("ADMIN")
+                    .build();
+        } else {
+            return User.builder()
+                    .username(member.getEmail())
+                    .password(member.getPassword())
+                    .roles("CLIENT")
+                    .build();
+        }
     }
-
-
 }

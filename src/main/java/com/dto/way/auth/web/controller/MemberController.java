@@ -23,8 +23,8 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @Operation(summary = "회원가입 API", description = "이름, 이메일, 비밀번호, 비밀번호 확인, 닉네임, 전화번호를 request body에 넣어주세요. 필드 값에 따라 정해진 형식에 맞게 넣어야 올바른 응답이 전송됩니다.")
     // 회원가입
+    @Operation(summary = "회원가입 API", description = "이름, 이메일, 비밀번호, 비밀번호 확인, 닉네임, 전화번호를 request body에 넣어주세요. 필드 값에 따라 정해진 형식에 맞게 넣어야 올바른 응답이 전송됩니다.")
     @PostMapping("/signup")
     public ApiResponse<CreateMemberRequestDTO> signUp(@Valid @RequestBody CreateMemberRequestDTO createMemberRequestDTO) {
 

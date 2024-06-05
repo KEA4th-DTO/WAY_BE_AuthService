@@ -34,7 +34,7 @@ public class MemberController {
             String nickname = createMemberRequestDTO.getNickname();
             log.info("member nickname = {}", nickname);
             Member member = memberService.findMemberByNickname(nickname);
-            memberService.initTagAndRecommend(member);
+            memberService.initTag(member);
             return ApiResponse.of(MEMBER_SIGNUP, createMemberRequestDTO);
         }
 

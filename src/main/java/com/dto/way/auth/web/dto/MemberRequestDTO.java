@@ -29,9 +29,9 @@ public class MemberRequestDTO {
         @NotBlank(message = "비밀번호 확인은 필수 입력 값입니다.")
         private String passwordCheck;
 
-        @NotBlank(message = "닉네임은 필수 입력 값입니다.")
-        @Pattern(regexp="^[A-Za-z0-9._]{5,30}$",
-                message = "닉네임은 영문 대,소문자와 숫자, 특수문자(._)만 가능합니다. 길이는 5자 ~ 30자 입니다.")
+        @NotBlank(message = "값을 입력해주세요.")
+        @Pattern(regexp="^[A-Za-z0-9._]{4,10}$",
+                message = "닉네임은 영문 대,소문자와 숫자, 특수문자(._)만 가능합니다. 길이는 4자 ~ 10자 입니다.")
         private String nickname;
 
         @NotBlank(message = "전화번호는 필수 입력 값입니다.")
@@ -60,8 +60,8 @@ public class MemberRequestDTO {
     public static class CheckNicknameRequestDTO {
 
         @NotBlank(message = "값을 입력해주세요.")
-        @Pattern(regexp="^[A-Za-z0-9._]{5,30}$",
-                message = "닉네임은 영문 대,소문자와 숫자, 특수문자(._)만 가능합니다. 길이는 5자 ~ 30자 입니다.")
+        @Pattern(regexp="^[A-Za-z0-9._]{4,10}$",
+                message = "닉네임은 영문 대,소문자와 숫자, 특수문자(._)만 가능합니다. 길이는 4자 ~ 10자 입니다.")
         private String nickname;
 
     }

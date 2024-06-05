@@ -88,7 +88,7 @@ public class MemberService {
     }
 
     @Transactional
-    public void initTagAndRecommend(Member member) {
+    public void initTag(Member member) {
         Tag tag = Tag.builder()
                 .taggedMember(member)
                 .wayTag1("태그1")
@@ -102,14 +102,6 @@ public class MemberService {
         System.out.println("Saved Tag ID: " + savedTag.getId());
         System.out.println("Tagged Member in Tag: " + savedTag.getTaggedMember().getId());
 
-        Recommend recommend = Recommend.builder()
-                .recommendedMember(member)
-                .memberId1(12345L)
-                .memberId2(23456L)
-                .memberId3(34567L)
-                .build();
-
-        recommendRepository.saveAndFlush(recommend);
     }
 
     public JwtToken login(LoginMemberRequestDTO loginMemberRequestDTO) {

@@ -2,7 +2,6 @@ package com.dto.way.auth.domain.service;
 
 import com.dto.way.auth.domain.entity.*;
 import com.dto.way.auth.domain.repository.MemberRepository;
-import com.dto.way.auth.domain.repository.RecommendRepository;
 import com.dto.way.auth.domain.repository.TagRepository;
 import com.dto.way.auth.global.JwtTokenProvider;
 import com.dto.way.auth.web.dto.JwtToken;
@@ -20,10 +19,10 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static com.dto.way.auth.domain.entity.MemberAuth.*;
+import static com.dto.way.auth.web.converter.MemberConverter.createMemberRequestDTOToMember;
 import static com.dto.way.auth.web.dto.MemberRequestDTO.*;
 import static com.dto.way.auth.web.response.code.status.ErrorStatus.*;
 import static com.dto.way.auth.web.response.code.status.SuccessStatus.*;
-
 
 @Slf4j
 @Service
@@ -36,10 +35,6 @@ public class MemberService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RedisService redisService;
     private final TagRepository tagRepository;
-    private final RecommendRepository recommendRepository;
-
-    public static final String DEFAULT_IMAGE = "https://way-bucket-s3.s3.ap-northeast-2.amazonaws.com/profile_image/default.jpg";
-
     @Transactional
     public String createMember(CreateMemberRequestDTO createMemberRequestDTO) {
 
@@ -63,24 +58,7 @@ public class MemberService {
 
         String password = passwordEncoder.encode(createMemberRequestDTO.getPassword());
 
-        /**
-         * CreateMemberRequestDTO 를 기반으로 멤버 생성
-         * 프로필 기본이미지 넣어줌
-         * role은 CLIENT로 설정
-         * 한줄 소개는 프로필 수정에서 처리
-         */
-        Member member = Member.builder()
-                .name(createMemberRequestDTO.getName())
-                .email(createMemberRequestDTO.getEmail())
-                .password(password)
-                .nickname(createMemberRequestDTO.getNickname())
-                .phoneNumber(createMemberRequestDTO.getPhoneNumber())
-                .memberStatus(MemberStatus.ACTIVATE)
-                .profileImageUrl(DEFAULT_IMAGE)
-                .createdAt(LocalDateTime.now())
-                .memberAuth(CLIENT)
-                .loginType(LoginType.GENERAL)
-                .build();
+        Member member = createMemberRequestDTOToMember(createMemberRequestDTO, password);
 
         memberRepository.saveAndFlush(member);
 
@@ -119,9 +97,6 @@ public class MemberService {
          * 1. 카카오 정보에 이름이 없어서 이름을 모름
          * 2. 카카오로 로그인하면 비밀번호가 암호화되지 않고 들어감
          */
-        CreateMemberRequestDTO createMemberRequestDTO = new CreateMemberRequestDTO();
-
-
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginMemberRequestDTO.getEmail(), loginMemberRequestDTO.getPassword());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);

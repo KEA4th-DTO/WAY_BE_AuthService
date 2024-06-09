@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static com.dto.way.auth.domain.entity.MemberAuth.CLIENT;
-import static com.dto.way.auth.domain.service.MemberService.DEFAULT_IMAGE;
+import static com.dto.way.auth.web.converter.MemberConverter.DEFAULT_IMAGE;
 
 @Slf4j
 @Service

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+import static com.dto.way.auth.web.converter.MemberConverter.toLoginMemberResponseDTO;
 import static com.dto.way.auth.web.dto.MemberRequestDTO.*;
 import static com.dto.way.auth.web.dto.MemberResponseDTO.*;
 import static com.dto.way.auth.web.response.code.status.SuccessStatus.*;
@@ -58,16 +59,12 @@ public class MemberController {
 
         JwtToken jwtToken = memberService.login(loginMemberRequestDTO);
 
-        LoginMemberResponseDTO loginMemberResponseDTO = new LoginMemberResponseDTO();
-
         if (jwtToken.getGrantType().equals(MEMBER_LOGIN_FAILED.getCode())) {
-            return ApiResponse.onFailure(MEMBER_LOGIN_FAILED.getCode(), MEMBER_LOGIN_FAILED.getMessage(), loginMemberResponseDTO);
+            return ApiResponse.onFailure(MEMBER_LOGIN_FAILED.getCode(), MEMBER_LOGIN_FAILED.getMessage(), null);
         } else {
             Member loginMember = memberService.findMemberByEmail(loginMemberRequestDTO.getEmail());
-            loginMemberResponseDTO.setName(loginMember.getName());
-            loginMemberResponseDTO.setEmail(loginMember.getEmail());
-            loginMemberResponseDTO.setNickname(loginMember.getNickname());
-            loginMemberResponseDTO.setJwtToken(jwtToken);
+
+            LoginMemberResponseDTO loginMemberResponseDTO = toLoginMemberResponseDTO(loginMember, jwtToken);
 
             return ApiResponse.of(MEMBER_LOGIN, loginMemberResponseDTO);
         }

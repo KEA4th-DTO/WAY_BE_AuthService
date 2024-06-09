@@ -5,6 +5,7 @@ import com.dto.way.auth.domain.entity.MemberStatus;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ public class MemberResponseDTO {
 
     @Getter
     @Setter
+    @Builder
     public static class LoginMemberResponseDTO {
 
         private String name;
